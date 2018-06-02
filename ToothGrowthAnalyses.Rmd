@@ -1,0 +1,37 @@
+---
+title: "ToothGrowthAnalyses"
+author: "AlekseyVosk"
+date: '3 June 2018'
+output: html_document
+---
+
+For research we will need functions from external packages.
+```{r}
+library(tidyverse)
+```
+
+## Data and exploratory data analyses
+Dataset contanes 60 observations on 3 variables:  
+1. len - Tooth length  
+2. supp - Supplement type: *VC* (ascorbic acid) or *OJ* (orange juice)  
+3. dose - Dose in milligrams/day  
+
+Loading data as tibble and looking on head/tail of data and it's structure.
+```{r}
+dataset <- as_tibble(ToothGrowth)
+head(dataset, 3)
+tail(dataset, 3)
+str(dataset)
+```
+To see how data is distributed, let's make table with 2 categorical variables (supp and dose) and boxplot of continuous variable (len).
+```{r}
+dataset_f <- mutate(dataset, dose = as.factor(dose))
+table(dataset_f$supp, dataset_f$dose)
+g <- ggplot(data = dataset_f) +
+    geom_boxplot(mapping = aes(x = dose, y = len)) +
+    labs(x = "Dose of supplement , milligrams/day ", y = "Tooth length", 
+         title = "Effect of Vitamin C on Tooth Growth in Guinea Pigs")
+g
+g + facet_wrap(~ supp) +
+    labs(title = "Effect of Vitamin C on Tooth Growth in Guinea Pigs, by Supplement type")
+```
