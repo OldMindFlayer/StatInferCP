@@ -1,8 +1,10 @@
 ---
 title: "ToothGrowthAnalyses"
 author: "AlekseyVosk"
-date: '3 June 2018'
-output: html_document
+date: "3 June 2018"
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 For research we will need functions from external packages.
@@ -48,3 +50,67 @@ g + geom_boxplot(mapping = aes(x = dose)) +
 ```
 
 Exploratory analyses shows us, than the tooth growth in guinea pigs differs in groups with different doses of vitamin C, but not so much in groups with different supplement type.
+
+## Statistical inference
+####For statistical inference first estimate relationships between tooth length and supplement types 
+**Hypotheses tests** for tooth length and supplement types:  
+H0: Tooth length and supplement types are **independent**. Tooth length dictribution **does not vary** by the supplement types.  
+HA: Tooth length and supplement types are **dependent**. Tooth length dictribution **vary** by the supplement types.  
+
+We compare one numerical and one categorical (with 2 levels and 30 cases in each category) variables, so I'll use Student's t-Test with significance level 0.05.
+```{r}
+test_len_supp <- t.test(filter(dataset, supp == "VC")$len, 
+                        filter(dataset, supp == "OJ")$len,
+                        alternative = "two.sided",
+                        mu = 0,
+                        paired = FALSE,
+                        conf.level = 0.95)
+paste0("p-value: ",test_len_supp$p.value)
+```
+P-value is above significance level, so we fail to regect H0.  
+We can also see 95% confidence interval:
+```{r}
+test_len_supp$conf.int
+```
+Confidence interval includes zero, so we can't rule out possibility of indifference between 2 groups.
+
+####Now let's estimate relationships between tooth length and dose of vitamin C
+**Hypotheses tests** for tooth length and dose:  
+H0: Tooth length and vitamin dose are **independent**. Tooth length dictribution **does not vary** by the vitamin dose.  
+HA: Tooth length and vitamin dose are **dependent**. Tooth length dictribution **vary** by the vitamin dose.  
+
+We compare one numerical and one categorical (with 3 levels and 20 cases in each category) variables. The optimal statistical test would be ANOVA, but as we need to use technique from the class, let's conduct 3 Student's t-Tests (still 2-sided).  
+We will need to correct our significance level for this 3 test's, for simplicity let's make Bonferroni correction on 0.05: 
+```{r}
+paste0("Bonferroni significance level: ", 0.05/3)
+test0.5_1 <- t.test(filter(dataset, dose == 0.5)$len,
+                filter(dataset, dose == 1)$len)
+test1_2 <- t.test(filter(dataset, dose == 1)$len,
+                filter(dataset, dose == 2)$len)
+test0.5_2 <- t.test(filter(dataset, dose == 0.5)$len,
+                filter(dataset, dose == 2)$len)
+paste0("0.5/1 p-value: ",test0.5_1$p.value)
+paste0("1/2 p-value: ",test1_2$p.value)
+paste0("0.5/2 p-value: ",test0.5_2$p.value)
+```
+All 3 p-values are much lower, then corrected significance level, so we can reject H0 in favor of HA.  
+
+## Conclusions
+Our statistical inference shows that at usual significance level tooth length and vitamin doses are associated, but tooth length and supplement types are not.  
+For this conclusions we must assume, that all pigs were independent to each other, and each pig corresponds to only one observation in the dataset.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
