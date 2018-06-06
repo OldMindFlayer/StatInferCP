@@ -3,8 +3,8 @@ title: "ToothGrowthAnalyses"
 author: "AlekseyVosk"
 date: "3 June 2018"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 For research we will need functions from external packages.
@@ -32,7 +32,7 @@ group_by(dataset_f, dose) %>%
 group_by(dataset_f, supp) %>%
     summarise(len = mean(len))
 ```
-Tooth length differs between each groups, to visualise it, let's make boxplots:
+Tooth length differs between each groups, to visualise it, let's make boxplots. (You can see plots in "Supporting appendix material" section)
 ```{r}
 g <- ggplot(data = dataset_f, mapping = aes(y = len)) +
     labs(y = "Tooth length", 
@@ -100,6 +100,13 @@ Our statistical inference shows that at usual significance level tooth length an
 For this conclusions we must assume, that all pigs were independent to each other, and each pig corresponds to only one observation in the dataset.
 
 
+
+### Supporting appendix material
+```{r, echo=FALSE}
+print(g1)
+print(g2)
+print(g3)
+```
 
 
 

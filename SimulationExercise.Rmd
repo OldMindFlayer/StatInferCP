@@ -27,9 +27,8 @@ exp_distr = list(
   mean = 1/0.2,
   sd = 1/0.2,
   var = (1/0.2)^2,
-  se_expected = (1/0.2)/sqrt(40)    # expected standard error of the sample mean, estimated for sample size 40
-)
-print(exp_distr)
+  se_expected = (1/0.2)/sqrt(40)    # expected standard error of the sample mean,
+)                                   # estimated for sample size 40
 ```
 
 ## Simulations
@@ -41,7 +40,7 @@ sim_means <- apply(sim_matrix, 1, mean)    # means for each of 1000 simulations
 sim_var <- apply(sim_matrix, 1, var)       # variances for each of 1000 simulations
 sim_df <- tibble(mean = sim_means, var = sim_var)
 
-sim_se <- sd(sim_means)                    # sample standard error of the mean, based on 1000 simulations
+sim_se <- sd(sim_means)                    # sample standard error of the mean
 sample_mean <- mean(sim_means)             # mean of the sampling mean distribution
 sample_var <- mean(sim_var)                # mean of the sampling variance distribution
 ```
@@ -71,15 +70,17 @@ c("relative difference", (exp_distr$se_expected - sim_se) / exp_distr$se_expecte
 ```
 We can see that both sample mean and standart error are very close to there theoretical values.
 
-To illustrate samplin distribution, let's plot it (usind smoothed version of the histogram) and compare it to the corresponding normal distribution.
+To illustrate samplin distribution, let's plot it (usind smoothed version of the histogram) and compare it to the corresponding normal distribution. (See "Plot 1" in "Supporting appendix material" section)
 ```{r}
 g1 <- ggplot() + 
-  geom_density(data = sim_df, mapping = aes(x = mean), colour = "red", fill = "red", alpha = 0.2, size = 1) +
-  geom_line(data = normal_df, mapping = aes(x = scale, y = value), colour = "black", linetype = 5, size = 1) +
+  geom_density(data = sim_df, mapping = aes(x = mean), colour = "red", fill = "red",
+               alpha = 0.2, size = 1) +
+  geom_line(data = normal_df, mapping = aes(x = scale, y = value), colour = "black",
+            linetype = 5, size = 1) +
   geom_vline(aes(xintercept = exp_distr$mean), linetype = 2, size = 1) +
   geom_vline(aes(xintercept = sample_mean), linetype = 1, size = 0.5,colour = "red") +
-  labs(x = "Sample mean", title = "Comparison simulated sampling mean and corresponding normal distributions")
-print(g1)
+  labs(x = "Sample mean",
+       title = "Plot 1. Comparison simulated sampling mean and corresponding normal distributions")
 ```
 
 Soild red line represents samplin distribution of mean, whereas black dashed line represents normal distribution.
@@ -94,28 +95,37 @@ c("relative difference", (exp_distr$var - sample_var) / exp_distr$var)
 ```
 There is less then 2% difference between sample and theoretical variance, so they are close.
 
-Now let's plot sample variance distribution.
+Now let's plot sample variance distribution. (See "Plot 2" in "Supporting appendix material" section)
 ```{r}
 g2 <- ggplot() + 
-  geom_density(data = sim_df, mapping = aes(x = var), colour = "blue", fill = "blue", alpha = 0.2, size = 1) +
+  geom_density(data = sim_df, mapping = aes(x = var), colour = "blue", fill = "blue",
+               alpha = 0.2, size = 1) +
   geom_vline(aes(xintercept = sample_var), linetype = 1, size = 0.5,colour = "blue") +
-  labs(x = "Sample variance", title = "Distribution of sample variance")
-print(g2)
+  labs(x = "Sample variance", title = "Plot 2. Distribution of sample variance")
 ```
 
 Sample variance distribution still looks bell-shaped, however it's right-skewed.
 
 ### Comparison of sample mean and big sample distributions
-Now let's compare our sample mean distribution and distribution of 1000 randomly generated values from exponential distribution.
+Now let's compare our sample mean distribution and distribution of 1000 randomly generated values from exponential distribution. (See "Plot 3" in "Supporting appendix material" section)
 ```{r}
 g3 <- ggplot() + 
-  geom_density(data = sim_df, mapping = aes(x = mean), colour = "red", fill = "red", alpha = 0.2, size = 1) +
-  geom_density(data = random_exp, mapping = aes(x = random1000), fill = "yellow", alpha = 0.1, size = 1) +
-  labs(x = "values", title = "Comparison of sample mean and big sample distributions")
-print(g3)
+  geom_density(data = sim_df, mapping = aes(x = mean), colour = "red", fill = "red",
+               alpha = 0.2, size = 1) +
+  geom_density(data = random_exp, mapping = aes(x = random1000), fill = "yellow",
+               alpha = 0.1, size = 1) +
+  labs(x = "values", 
+       title = "Plot 3. Comparison of sample mean and big sample distributions")
 ```
 
 As we can see, while our sampling distribution (red on the plot) looks nearly normal, distribution of big sample (n=1000) of random exponentials (yellow on the plot) is highly skewed and isn't approximated by normal distribution.
 
 ### Conclusions
 Distributions of 1000 sample means and variances from exponential distribution of size 40 looks nearly normal, and there means are close to the theoretical exponential distribution mean and variance.
+
+### Supporting appendix material
+```{r, echo=FALSE}
+print(g1)
+print(g2)
+print(g3)
+```
